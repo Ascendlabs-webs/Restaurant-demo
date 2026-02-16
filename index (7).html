@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Maison - Fine Dining Excellence</title>
+    <meta name="description" content="Experience exquisite dining at La Maison. Michelin-recognized restaurant offering culinary artistry in an atmosphere of refined elegance.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Lucide Icon Components
+        const ChefHat = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
+                <line x1="6" x2="18" y1="17" y2="17"/>
+            </svg>
+        );
+
+        const MapPin = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+            </svg>
+        );
+
+        const Phone = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+        );
+
+        const Mail = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+        );
+
+        const Clock = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+            </svg>
+        );
+
+        const Star = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+        );
+
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+            </svg>
+        );
+
+        const X = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M18 6 6 18"/>
+                <path d="m6 6 12 12"/>
+            </svg>
+        );
+
+        const Sparkles = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                <path d="M5 3v4"/>
+                <path d="M19 17v4"/>
+                <path d="M3 5h4"/>
+                <path d="M17 19h4"/>
+            </svg>
+        );
+
+        const Utensils = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                <path d="M7 2v20"/>
+                <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+            </svg>
+        );
+
+        const Wine = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M8 22h8"/>
+                <path d="M7 10h10"/>
+                <path d="M12 15v7"/>
+                <path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>
+            </svg>
+        );
+
+        const Award = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="8" r="6"/>
+                <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+        );
+
+        // Main App Component with Routing
+        const RestaurantWebsite = () => {
+          const [currentPage, setCurrentPage] = useState('home');
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+          const [isTransitioning, setIsTransitioning] = useState(false);
+
+          const navigateTo = (page) => {
+            setIsTransitioning(true);
+            setIsMenuOpen(false);
+            setTimeout(() => {
+              setCurrentPage(page);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setTimeout(() => setIsTransitioning(false), 100);
+            }, 400);
+          };
+
+          return (
+            <div className="font-sans bg-[#0a0a0a] text-white min-h-screen">
+              <Navigation 
+                currentPage={currentPage} 
+                navigateTo={navigateTo}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+              />
+              
+              <div className={`transition-opacity duration-400 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+                {currentPage === 'home' && <HomePage navigateTo={navigateTo} />}
+                {currentPage === 'menu' && <MenuPage />}
+                {currentPage === 'about' && <AboutPage />}
+                {currentPage === 'gallery' && <GalleryPage />}
+                {currentPage === 'reviews' && <ReviewsPage />}
+                {currentPage === 'contact' && <ContactPage />}
+              </div>
+
+              <Footer navigateTo={navigateTo} />
+            </div>
+          );
+        };
+
+        // Navigation Component
+        const Navigation = ({ currentPage, navigateTo, isMenuOpen, setIsMenuOpen }) => {
+          const [scrolled, setScrolled] = useState(false);
+
+          useEffect(() => {
+            const handleScroll = () => setScrolled(window.scrollY > 50);
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          const navItems = ['Home', 'Menu', 'About', 'Gallery', 'Reviews', 'Contact'];
+
+          return (
+            <>
+              <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+                scrolled ? 'bg-black/95 backdrop-blur-lg py-4 shadow-2xl' : 'bg-transparent py-6'
+              }`}>
+                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                  <div 
+                    onClick={() => navigateTo('home')}
+                    className="text-2xl font-bold tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+                    style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                  >
+                    <span className="text-[#d4af37]">La</span> Maison
+                  </div>
+                  
+                  <div className="hidden md:flex items-center gap-8">
+                    {navItems.map((item) => (
+                      <button
+                        key={item}
+                        onClick={() => navigateTo(item.toLowerCase())}
+                        className={`text-sm uppercase tracking-widest transition-all duration-300 hover:text-[#d4af37] relative group ${
+                          currentPage === item.toLowerCase() ? 'text-[#d4af37]' : 'text-white/80'
+                        }`}
+                        style={{ fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.15em' }}
+                      >
+                        {item}
+                        <span className={`absolute -bottom-1 left-0 h-[1px] bg-[#d4af37] transition-all duration-300 ${
+                          currentPage === item.toLowerCase() ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`} />
+                      </button>
+                    ))}
+                    <button className="bg-[#d4af37] text-black px-6 py-2.5 text-sm font-semibold tracking-wider uppercase hover:bg-[#f4cf5c] transition-all duration-300 hover:scale-105">
+                      Reserve
+                    </button>
+                  </div>
+
+                  <button 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="md:hidden text-[#d4af37] hover:opacity-80 transition-opacity"
+                  >
+                    {isMenuOpen ? <X size={28} /> : (
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </nav>
+
+              {/* Mobile Menu */}
+              <div className={`fixed inset-0 bg-black z-40 md:hidden transition-all duration-500 ${
+                isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+              }`}>
+                <div className="flex flex-col items-center justify-center h-full gap-8">
+                  {navItems.map((item, index) => (
+                    <button
+                      key={item}
+                      onClick={() => navigateTo(item.toLowerCase())}
+                      className={`text-3xl font-bold tracking-wide transition-all duration-300 hover:text-[#d4af37] ${
+                        currentPage === item.toLowerCase() ? 'text-[#d4af37]' : 'text-white'
+                      }`}
+                      style={{ 
+                        fontFamily: 'Cormorant Garamond, serif',
+                        animationDelay: `${index * 100}ms`,
+                        animation: isMenuOpen ? 'fadeInUp 0.6s ease-out forwards' : 'none'
+                      }}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          );
+        };
+
+        // Home Page
+        const HomePage = ({ navigateTo }) => {
+          const [isVisible, setIsVisible] = useState(false);
+
+          useEffect(() => {
+            setIsVisible(true);
+          }, []);
+
+          return (
+            <div>
+              {/* Hero Section */}
+              <section className="relative h-screen flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-black via-[#1a1410] to-black opacity-90" />
+                <div 
+                  className="absolute inset-0 opacity-20"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%)',
+                  }}
+                />
+                
+                <div className={`relative z-10 text-center px-6 transition-all duration-1000 delay-200 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+                }`}>
+                  <div className="mb-6 flex justify-center">
+                    <Sparkles className="text-[#d4af37] animate-pulse" size={32} />
+                  </div>
+                  <h1 
+                    className="text-6xl md:text-8xl font-bold mb-6 tracking-tight"
+                    style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                  >
+                    Exquisite Dining
+                    <br />
+                    <span className="text-[#d4af37]">Reimagined</span>
+                  </h1>
+                  <p 
+                    className="text-xl md:text-2xl mb-12 text-white/70 max-w-2xl mx-auto tracking-wide"
+                    style={{ fontFamily: 'Montserrat, sans-serif' }}
+                  >
+                    Where culinary artistry meets timeless elegance
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button 
+                      onClick={() => navigateTo('menu')}
+                      className="bg-[#d4af37] text-black px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-[#f4cf5c] transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#d4af37]/50"
+                    >
+                      Explore Menu
+                    </button>
+                    <button className="border-2 border-[#d4af37] text-[#d4af37] px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-[#d4af37] hover:text-black transition-all duration-300 hover:scale-105">
+                      Reserve Table
+                    </button>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+                  <div className="w-6 h-10 border-2 border-[#d4af37]/50 rounded-full flex justify-center p-2">
+                    <div className="w-1.5 h-2 bg-[#d4af37] rounded-full animate-pulse" />
+                  </div>
+                </div>
+              </section>
+
+              {/* Featured Dishes Preview */}
+              <section className="py-24 px-6 bg-gradient-to-b from-black to-[#0f0f0f]">
+                <AnimatedSection>
+                  <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                      <h2 
+                        className="text-5xl md:text-6xl font-bold mb-4"
+                        style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                      >
+                        Signature <span className="text-[#d4af37]">Creations</span>
+                      </h2>
+                      <p className="text-white/60 text-lg max-w-2xl mx-auto">
+                        Handcrafted dishes that tell a story of passion and precision
+                      </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                      {[
+                        { name: 'Truffle Risotto', desc: 'Arborio rice, black truffle, aged parmesan', price: '$48' },
+                        { name: 'Wagyu Tenderloin', desc: 'Japanese A5, red wine reduction, seasonal vegetables', price: '$85' },
+                        { name: 'Lobster Thermidor', desc: 'Atlantic lobster, brandy cream, herb crust', price: '$72' }
+                      ].map((dish, index) => (
+                        <DishCard key={index} dish={dish} index={index} />
+                      ))}
+                    </div>
+
+                    <div className="text-center mt-12">
+                      <button 
+                        onClick={() => navigateTo('menu')}
+                        className="inline-flex items-center gap-2 text-[#d4af37] text-sm uppercase tracking-widest font-semibold hover:gap-4 transition-all duration-300 group"
+                      >
+                        View Full Menu
+                        <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </AnimatedSection>
+              </section>
+
+              {/* Experience Section */}
+              <section className="py-24 px-6 bg-[#0f0f0f] relative overflow-hidden">
+                <div className="absolute inset-0 opacity-5">
+                  <div className="absolute top-20 left-20 w-96 h-96 bg-[#d4af37] rounded-full blur-[120px]" />
+                  <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#d4af37] rounded-full blur-[120px]" />
+                </div>
+                
+                <AnimatedSection>
+                  <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 relative z-10">
+                    {[
+                      { icon: <Award size={48} />, title: 'Michelin Recognized', desc: 'Awarded for excellence in culinary innovation' },
+                      { icon: <ChefHat size={48} />, title: 'Master Chefs', desc: 'Decades of combined experience from around the world' },
+                      { icon: <Wine size={48} />, title: 'Curated Wine List', desc: 'Over 300 selections from premier vineyards' }
+                    ].map((item, index) => (
+                      <div 
+                        key={index}
+                        className="text-center group hover:scale-105 transition-transform duration-300"
+                      >
+                        <div className="text-[#d4af37] mb-6 flex justify-center group-hover:rotate-12 transition-transform duration-500">
+                          {item.icon}
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                          {item.title}
+                        </h3>
+                        <p className="text-white/60">{item.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedSection>
+              </section>
+
+              {/* CTA Section */}
+              <section className="py-32 px-6 bg-gradient-to-br from-[#1a1410] via-black to-[#0f0f0f] relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg, #d4af37 0px, #d4af37 1px, transparent 1px, transparent 20px)',
+                  }} />
+                </div>
+                
+                <AnimatedSection>
+                  <div className="max-w-4xl mx-auto text-center relative z-10">
+                    <h2 
+                      className="text-5xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      An Evening to <span className="text-[#d4af37]">Remember</span>
+                    </h2>
+                    <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto">
+                      Reserve your table and experience culinary excellence that transcends the ordinary
+                    </p>
+                    <button className="bg-[#d4af37] text-black px-12 py-5 text-sm font-bold uppercase tracking-widest hover:bg-[#f4cf5c] transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#d4af37]/50">
+                      Make a Reservation
+                    </button>
+                  </div>
+                </AnimatedSection>
+              </section>
+            </div>
+          );
+        };
+
+        // Menu Page
+        const MenuPage = () => {
+          const categories = [
+            {
+              name: 'Starters',
+              icon: <Sparkles size={24} />,
+              items: [
+                { name: 'Oysters Rockefeller', desc: 'Fresh oysters, spinach, hollandaise, parmesan crust', price: '$28' },
+                { name: 'Foie Gras Torchon', desc: 'Duck liver, brioche, cherry compote, pistachios', price: '$32' },
+                { name: 'Tuna Tartare', desc: 'Yellowfin tuna, avocado, sesame, ponzu', price: '$24' },
+                { name: 'Burrata', desc: 'Heirloom tomatoes, basil, aged balsamic, olive oil', price: '$22' }
+              ]
+            },
+            {
+              name: 'Mains',
+              icon: <Utensils size={24} />,
+              items: [
+                { name: 'Wagyu Tenderloin', desc: 'Japanese A5, red wine reduction, seasonal vegetables', price: '$85', signature: true },
+                { name: 'Lobster Thermidor', desc: 'Atlantic lobster, brandy cream, herb crust', price: '$72', signature: true },
+                { name: 'Truffle Risotto', desc: 'Arborio rice, black truffle, aged parmesan', price: '$48', signature: true },
+                { name: 'Duck Confit', desc: 'Crispy duck leg, cherry gastrique, potato puree', price: '$56' },
+                { name: 'Sea Bass', desc: 'Mediterranean sea bass, saffron sauce, fennel', price: '$62' },
+                { name: 'Lamb Rack', desc: 'New Zealand lamb, rosemary jus, root vegetables', price: '$68' }
+              ]
+            },
+            {
+              name: 'Desserts',
+              icon: <Award size={24} />,
+              items: [
+                { name: 'Chocolate Soufflé', desc: 'Dark chocolate, vanilla ice cream, raspberry coulis', price: '$18' },
+                { name: 'Crème Brûlée', desc: 'Classic vanilla custard, caramelized sugar', price: '$14' },
+                { name: 'Tarte Tatin', desc: 'Caramelized apple, puff pastry, vanilla bean', price: '$16' },
+                { name: 'Tiramisu', desc: 'Mascarpone, espresso, cocoa, ladyfingers', price: '$15' }
+              ]
+            },
+            {
+              name: 'Beverages',
+              icon: <Wine size={24} />,
+              items: [
+                { name: 'House Red Wine', desc: 'Bordeaux blend, full-bodied', price: '$12/glass' },
+                { name: 'House White Wine', desc: 'Chardonnay, crisp and elegant', price: '$12/glass' },
+                { name: 'Champagne', desc: 'Moët & Chandon, celebrations await', price: '$18/glass' },
+                { name: 'Craft Cocktails', desc: 'Mixologist creations, seasonal ingredients', price: '$16' }
+              ]
+            }
+          ];
+
+          return (
+            <div className="pt-32 pb-24 px-6 bg-gradient-to-b from-black via-[#0f0f0f] to-black min-h-screen">
+              <div className="max-w-6xl mx-auto">
+                <AnimatedSection>
+                  <div className="text-center mb-20">
+                    <h1 
+                      className="text-6xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      Our <span className="text-[#d4af37]">Menu</span>
+                    </h1>
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                      A curated selection of artisanal dishes crafted with the finest ingredients
+                    </p>
+                  </div>
+                </AnimatedSection>
+
+                {categories.map((category, categoryIndex) => (
+                  <AnimatedSection key={categoryIndex}>
+                    <div className="mb-20">
+                      <div className="flex items-center gap-4 mb-10">
+                        <div className="text-[#d4af37]">{category.icon}</div>
+                        <h2 
+                          className="text-4xl font-bold"
+                          style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                        >
+                          {category.name}
+                        </h2>
+                        <div className="flex-1 h-[1px] bg-gradient-to-r from-[#d4af37] to-transparent ml-4" />
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {category.items.map((item, itemIndex) => (
+                          <MenuItem key={itemIndex} item={item} index={itemIndex} />
+                        ))}
+                      </div>
+                    </div>
+                  </AnimatedSection>
+                ))}
+              </div>
+            </div>
+          );
+        };
+
+        // About Page
+        const AboutPage = () => {
+          return (
+            <div className="pt-32 pb-24 px-6 bg-gradient-to-b from-black via-[#0f0f0f] to-black min-h-screen">
+              <div className="max-w-6xl mx-auto">
+                <AnimatedSection>
+                  <div className="text-center mb-20">
+                    <h1 
+                      className="text-6xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      Our <span className="text-[#d4af37]">Story</span>
+                    </h1>
+                  </div>
+                </AnimatedSection>
+
+                <AnimatedSection>
+                  <div className="grid md:grid-cols-2 gap-16 mb-24">
+                    <div>
+                      <div className="bg-gradient-to-br from-[#d4af37]/20 to-transparent h-96 rounded-lg mb-6 flex items-center justify-center">
+                        <ChefHat size={80} className="text-[#d4af37]/30" />
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <h2 className="text-4xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        A Legacy of Excellence
+                      </h2>
+                      <p className="text-white/70 text-lg leading-relaxed mb-6">
+                        Since 1985, La Maison has been a beacon of culinary excellence, bringing together traditional techniques and modern innovation. Our journey began with a simple vision: to create unforgettable dining experiences that celebrate the art of fine cuisine.
+                      </p>
+                      <p className="text-white/70 text-lg leading-relaxed">
+                        Every dish tells a story, every ingredient is carefully sourced, and every moment in our dining room is crafted to perfection. We believe that dining is not just about food—it's about connection, celebration, and creating memories that last a lifetime.
+                      </p>
+                    </div>
+                  </div>
+                </AnimatedSection>
+
+                <AnimatedSection>
+                  <div className="grid md:grid-cols-2 gap-16 mb-24">
+                    <div className="flex flex-col justify-center order-2 md:order-1">
+                      <h2 className="text-4xl font-bold mb-6" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        <span className="text-[#d4af37]">Chef</span> Marcel Beaumont
+                      </h2>
+                      <p className="text-white/70 text-lg leading-relaxed mb-6">
+                        Our Executive Chef, Marcel Beaumont, trained in the finest kitchens of Paris and Lyon before bringing his expertise to La Maison. With three decades of experience and a Michelin star to his name, Chef Marcel leads our culinary team with passion and precision.
+                      </p>
+                      <p className="text-white/70 text-lg leading-relaxed">
+                        His philosophy is simple: respect the ingredient, honor the technique, and always innovate. This approach has earned La Maison recognition as one of the region's premier dining destinations.
+                      </p>
+                    </div>
+                    <div className="order-1 md:order-2">
+                      <div className="bg-gradient-to-br from-transparent to-[#d4af37]/20 h-96 rounded-lg flex items-center justify-center">
+                        <Award size={80} className="text-[#d4af37]/30" />
+                      </div>
+                    </div>
+                  </div>
+                </AnimatedSection>
+
+                <AnimatedSection>
+                  <div className="bg-gradient-to-br from-[#1a1410] to-transparent p-12 rounded-lg">
+                    <h2 className="text-4xl font-bold mb-8 text-center" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                      The <span className="text-[#d4af37]">Atmosphere</span>
+                    </h2>
+                    <p className="text-white/70 text-lg leading-relaxed text-center max-w-3xl mx-auto mb-12">
+                      Step into a world where elegance meets warmth. Our intimate dining room features rich wood accents, soft ambient lighting, and carefully curated artwork that creates an atmosphere of refined sophistication. Every detail, from the crisp linens to the handcrafted glassware, is designed to elevate your dining experience.
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-8 text-center">
+                      {[
+                        { number: '65', label: 'Seats' },
+                        { number: '300+', label: 'Wine Selections' },
+                        { number: '38', label: 'Years of Excellence' }
+                      ].map((stat, index) => (
+                        <div key={index} className="group hover:scale-105 transition-transform duration-300">
+                          <div className="text-5xl font-bold text-[#d4af37] mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                            {stat.number}
+                          </div>
+                          <div className="text-white/60 uppercase tracking-wider text-sm">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </AnimatedSection>
+              </div>
+            </div>
+          );
+        };
+
+        // Gallery Page
+        const GalleryPage = () => {
+          const images = [
+            { type: 'dish', label: 'Wagyu Tenderloin' },
+            { type: 'interior', label: 'Main Dining Room' },
+            { type: 'dish', label: 'Lobster Thermidor' },
+            { type: 'dish', label: 'Truffle Risotto' },
+            { type: 'interior', label: 'Private Dining' },
+            { type: 'dish', label: 'Chocolate Soufflé' },
+            { type: 'interior', label: 'Wine Cellar' },
+            { type: 'dish', label: 'Tuna Tartare' },
+            { type: 'interior', label: 'Bar Area' }
+          ];
+
+          return (
+            <div className="pt-32 pb-24 px-6 bg-gradient-to-b from-black via-[#0f0f0f] to-black min-h-screen">
+              <div className="max-w-7xl mx-auto">
+                <AnimatedSection>
+                  <div className="text-center mb-20">
+                    <h1 
+                      className="text-6xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      Visual <span className="text-[#d4af37]">Journey</span>
+                    </h1>
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                      A glimpse into the artistry and ambiance of La Maison
+                    </p>
+                  </div>
+                </AnimatedSection>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  {images.map((image, index) => (
+                    <GalleryItem key={index} image={image} index={index} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Reviews Page
+        const ReviewsPage = () => {
+          const reviews = [
+            {
+              name: 'Sarah Mitchell',
+              rating: 5,
+              date: 'January 2026',
+              text: 'An absolutely phenomenal dining experience. The Wagyu tenderloin was cooked to perfection, and the service was impeccable. This is fine dining at its finest.',
+              title: 'Unforgettable Evening'
+            },
+            {
+              name: 'James Anderson',
+              rating: 5,
+              date: 'December 2025',
+              text: 'Chef Marcel\'s attention to detail is extraordinary. Every course was a masterpiece. The wine pairing elevated each dish beautifully. Worth every penny.',
+              title: 'Culinary Masterpiece'
+            },
+            {
+              name: 'Emily Chen',
+              rating: 5,
+              date: 'December 2025',
+              text: 'The ambiance is sophisticated yet welcoming. Our anniversary dinner here was magical. The truffle risotto is a must-try, and the chocolate soufflé was divine.',
+              title: 'Perfect Anniversary Celebration'
+            },
+            {
+              name: 'Michael Roberts',
+              rating: 5,
+              date: 'November 2025',
+              text: 'I\'ve dined at Michelin-starred restaurants around the world, and La Maison stands among the best. The lobster thermidor was exceptional, and the service team made us feel like royalty.',
+              title: 'World-Class Excellence'
+            },
+            {
+              name: 'Lisa Thompson',
+              rating: 5,
+              date: 'November 2025',
+              text: 'From the moment we walked in, we knew this would be special. The attention to detail, from the presentation to the flavors, was outstanding. Already planning our next visit.',
+              title: 'Exceptional in Every Way'
+            },
+            {
+              name: 'David Park',
+              rating: 5,
+              date: 'October 2025',
+              text: 'The tasting menu was an adventure through flavors and textures I\'d never experienced. Each dish told a story, and the staff were knowledgeable and passionate. Highly recommended.',
+              title: 'A Culinary Adventure'
+            }
+          ];
+
+          const averageRating = 5.0;
+          const totalReviews = 247;
+
+          return (
+            <div className="pt-32 pb-24 px-6 bg-gradient-to-b from-black via-[#0f0f0f] to-black min-h-screen">
+              <div className="max-w-6xl mx-auto">
+                <AnimatedSection>
+                  <div className="text-center mb-20">
+                    <h1 
+                      className="text-6xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      Guest <span className="text-[#d4af37]">Reviews</span>
+                    </h1>
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} size={28} className="fill-[#d4af37] text-[#d4af37]" />
+                        ))}
+                      </div>
+                      <span className="text-3xl font-bold text-[#d4af37]">{averageRating}</span>
+                    </div>
+                    <p className="text-white/60">Based on {totalReviews} reviews</p>
+                  </div>
+                </AnimatedSection>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {reviews.map((review, index) => (
+                    <ReviewCard key={index} review={review} index={index} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Contact Page
+        const ContactPage = () => {
+          const [formData, setFormData] = useState({
+            name: '',
+            email: '',
+            phone: '',
+            date: '',
+            guests: '2',
+            message: ''
+          });
+
+          const handleSubmit = (e) => {
+            e.preventDefault();
+            alert('Reservation request submitted! We will contact you shortly to confirm.');
+          };
+
+          return (
+            <div className="pt-32 pb-24 px-6 bg-gradient-to-b from-black via-[#0f0f0f] to-black min-h-screen">
+              <div className="max-w-6xl mx-auto">
+                <AnimatedSection>
+                  <div className="text-center mb-20">
+                    <h1 
+                      className="text-6xl md:text-7xl font-bold mb-6"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      Reserve Your <span className="text-[#d4af37]">Table</span>
+                    </h1>
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto">
+                      Join us for an unforgettable dining experience
+                    </p>
+                  </div>
+                </AnimatedSection>
+
+                <div className="grid md:grid-cols-2 gap-16">
+                  <AnimatedSection>
+                    <div>
+                      <h2 className="text-3xl font-bold mb-8" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                        Get in Touch
+                      </h2>
+                      
+                      <div className="space-y-6 mb-12">
+                        <div className="flex items-start gap-4">
+                          <MapPin className="text-[#d4af37] mt-1" size={24} />
+                          <div>
+                            <div className="font-semibold mb-1">Location</div>
+                            <div className="text-white/60">123 Culinary Boulevard<br />Downtown, CA 90210</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                          <Phone className="text-[#d4af37] mt-1" size={24} />
+                          <div>
+                            <div className="font-semibold mb-1">Phone</div>
+                            <div className="text-white/60">(555) 123-4567</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                          <Mail className="text-[#d4af37] mt-1" size={24} />
+                          <div>
+                            <div className="font-semibold mb-1">Email</div>
+                            <div className="text-white/60">reservations@lamaison.com</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                          <Clock className="text-[#d4af37] mt-1" size={24} />
+                          <div>
+                            <div className="font-semibold mb-1">Hours</div>
+                            <div className="text-white/60">
+                              Tue - Sat: 5:30 PM - 10:30 PM<br />
+                              Sun - Mon: Closed
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-gradient-to-br from-[#1a1410] to-transparent h-64 rounded-lg flex items-center justify-center">
+                        <MapPin size={60} className="text-[#d4af37]/30" />
+                      </div>
+                    </div>
+                  </AnimatedSection>
+
+                  <AnimatedSection>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Full Name"
+                          value={formData.name}
+                          onChange={(e) => setFormData({...formData, name: e.target.value})}
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white placeholder-white/40 focus:border-[#d4af37] focus:outline-none transition-colors"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <input
+                          type="email"
+                          placeholder="Email Address"
+                          value={formData.email}
+                          onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white placeholder-white/40 focus:border-[#d4af37] focus:outline-none transition-colors"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <input
+                          type="tel"
+                          placeholder="Phone Number"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white placeholder-white/40 focus:border-[#d4af37] focus:outline-none transition-colors"
+                          required
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) => setFormData({...formData, date: e.target.value})}
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white focus:border-[#d4af37] focus:outline-none transition-colors"
+                          required
+                        />
+                        <select
+                          value={formData.guests}
+                          onChange={(e) => setFormData({...formData, guests: e.target.value})}
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white focus:border-[#d4af37] focus:outline-none transition-colors"
+                        >
+                          {[1,2,3,4,5,6,7,8].map(num => (
+                            <option key={num} value={num}>{num} {num === 1 ? 'Guest' : 'Guests'}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <textarea
+                          placeholder="Special Requests (optional)"
+                          value={formData.message}
+                          onChange={(e) => setFormData({...formData, message: e.target.value})}
+                          rows="4"
+                          className="w-full bg-white/5 border border-white/10 rounded px-6 py-4 text-white placeholder-white/40 focus:border-[#d4af37] focus:outline-none transition-colors resize-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full bg-[#d4af37] text-black px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-[#f4cf5c] transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#d4af37]/50"
+                      >
+                        Request Reservation
+                      </button>
+
+                      <p className="text-white/40 text-sm text-center">
+                        We'll contact you within 24 hours to confirm your reservation
+                      </p>
+                    </form>
+                  </AnimatedSection>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Footer Component
+        const Footer = ({ navigateTo }) => {
+          return (
+            <footer className="bg-black border-t border-white/10 py-16 px-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="grid md:grid-cols-4 gap-12 mb-12">
+                  <div>
+                    <div 
+                      className="text-2xl font-bold mb-4"
+                      style={{ fontFamily: 'Cormorant Garamond, serif' }}
+                    >
+                      <span className="text-[#d4af37]">La</span> Maison
+                    </div>
+                    <p className="text-white/60 text-sm leading-relaxed">
+                      Fine dining excellence since 1985. Experience culinary artistry in an atmosphere of refined elegance.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold mb-4 uppercase tracking-wider text-sm">Quick Links</h3>
+                    <div className="space-y-2">
+                      {['Home', 'Menu', 'About', 'Gallery', 'Reviews', 'Contact'].map(item => (
+                        <button
+                          key={item}
+                          onClick={() => navigateTo(item.toLowerCase())}
+                          className="block text-white/60 hover:text-[#d4af37] transition-colors text-sm"
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold mb-4 uppercase tracking-wider text-sm">Hours</h3>
+                    <div className="space-y-2 text-sm text-white/60">
+                      <div>Tuesday - Saturday</div>
+                      <div className="text-[#d4af37]">5:30 PM - 10:30 PM</div>
+                      <div className="mt-4">Sunday - Monday</div>
+                      <div>Closed</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold mb-4 uppercase tracking-wider text-sm">Contact</h3>
+                    <div className="space-y-2 text-sm text-white/60">
+                      <div>123 Culinary Boulevard</div>
+                      <div>Downtown, CA 90210</div>
+                      <div className="mt-4 text-[#d4af37]">(555) 123-4567</div>
+                      <div>reservations@lamaison.com</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                  <div className="text-white/40 text-sm">
+                    © 2026 La Maison. All rights reserved.
+                  </div>
+                  <div className="flex gap-6 text-sm text-white/40">
+                    <button className="hover:text-[#d4af37] transition-colors">Privacy Policy</button>
+                    <button className="hover:text-[#d4af37] transition-colors">Terms of Service</button>
+                  </div>
+                </div>
+              </div>
+            </footer>
+          );
+        };
+
+        // Reusable Components
+
+        const DishCard = ({ dish, index }) => {
+          const [isHovered, setIsHovered] = useState(false);
+          
+          return (
+            <div
+              className="group cursor-pointer transition-all duration-500 hover:scale-105"
+              style={{
+                animationDelay: `${index * 150}ms`,
+                animation: 'fadeInUp 0.8s ease-out forwards',
+                opacity: 0
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <div className="bg-gradient-to-br from-[#1a1410] to-black p-8 rounded-lg border border-[#d4af37]/20 hover:border-[#d4af37]/50 transition-all duration-300 h-full relative overflow-hidden">
+                <div className={`absolute inset-0 bg-gradient-to-br from-[#d4af37]/10 to-transparent transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+                
+                <div className="relative z-10">
+                  <div className="bg-gradient-to-br from-[#d4af37]/30 to-transparent w-full h-48 rounded-lg mb-6 flex items-center justify-center">
+                    <Utensils size={60} className="text-[#d4af37]/40" />
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                    {dish.name}
+                  </h3>
+                  <p className="text-white/60 text-sm mb-4 leading-relaxed">{dish.desc}</p>
+                  <div className="text-[#d4af37] text-xl font-bold">{dish.price}</div>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const MenuItem = ({ item, index }) => {
+          return (
+            <div
+              className="bg-gradient-to-r from-[#1a1410]/50 to-transparent p-6 rounded-lg border border-white/5 hover:border-[#d4af37]/30 transition-all duration-300 group cursor-pointer"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animation: 'fadeInUp 0.6s ease-out forwards',
+                opacity: 0
+              }}
+            >
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-xl font-bold group-hover:text-[#d4af37] transition-colors" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                      {item.name}
+                    </h3>
+                    {item.signature && (
+                      <span className="bg-[#d4af37] text-black text-xs px-2 py-1 rounded uppercase font-bold tracking-wider">
+                        Signature
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-white/60 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+                <div className="text-[#d4af37] text-lg font-bold whitespace-nowrap">{item.price}</div>
+              </div>
+            </div>
+          );
+        };
+
+        const GalleryItem = ({ image, index }) => {
+          const [isHovered, setIsHovered] = useState(false);
+          
+          return (
+            <div
+              className="relative overflow-hidden rounded-lg group cursor-pointer aspect-square"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animation: 'fadeInUp 0.7s ease-out forwards',
+                opacity: 0
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37]/20 to-[#1a1410] flex items-center justify-center">
+                {image.type === 'dish' ? (
+                  <Utensils size={80} className="text-[#d4af37]/30" />
+                ) : (
+                  <Award size={80} className="text-[#d4af37]/30" />
+                )}
+              </div>
+              
+              <div className={`absolute inset-0 bg-black/60 transition-opacity duration-500 ${isHovered ? 'opacity-0' : 'opacity-40'}`} />
+              
+              <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent transition-transform duration-500 ${isHovered ? 'translate-y-0' : 'translate-y-4'}`}>
+                <h3 className="text-xl font-bold" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  {image.label}
+                </h3>
+                <p className="text-white/60 text-sm uppercase tracking-wider">{image.type}</p>
+              </div>
+            </div>
+          );
+        };
+
+        const ReviewCard = ({ review, index }) => {
+          return (
+            <div
+              className="bg-gradient-to-br from-[#1a1410] to-transparent p-8 rounded-lg border border-white/10 hover:border-[#d4af37]/30 transition-all duration-300"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animation: 'fadeInUp 0.7s ease-out forwards',
+                opacity: 0
+              }}
+            >
+              <div className="flex gap-1 mb-4">
+                {[...Array(review.rating)].map((_, i) => (
+                  <Star key={i} size={20} className="fill-[#d4af37] text-[#d4af37]" />
+                ))}
+              </div>
+              
+              <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                {review.title}
+              </h3>
+              
+              <p className="text-white/70 leading-relaxed mb-6">
+                "{review.text}"
+              </p>
+              
+              <div className="flex justify-between items-center text-sm">
+                <div className="font-semibold">{review.name}</div>
+                <div className="text-white/40">{review.date}</div>
+              </div>
+            </div>
+          );
+        };
+
+        const AnimatedSection = ({ children }) => {
+          const [isVisible, setIsVisible] = useState(false);
+          const ref = useRef(null);
+
+          useEffect(() => {
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting) {
+                  setIsVisible(true);
+                }
+              },
+              { threshold: 0.1 }
+            );
+
+            if (ref.current) {
+              observer.observe(ref.current);
+            }
+
+            return () => {
+              if (ref.current) {
+                observer.unobserve(ref.current);
+              }
+            };
+          }, []);
+
+          return (
+            <div
+              ref={ref}
+              className={`transition-all duration-1000 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              }`}
+            >
+              {children}
+            </div>
+          );
+        };
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<RestaurantWebsite />);
+    </script>
+</body>
+</html>
